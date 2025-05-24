@@ -1,0 +1,14 @@
+excludes:
+  - dev
+  - lost+found
+  - mnt
+  - proc
+  - run
+  - sys
+  - tmp
+  - var/cache/*
+  - home/*/.cache/*
+  - var/tmp/*
+  - home/*/node_modules/*
+  - home/*/.m2/*
+  - home/*/__pycache__/*
