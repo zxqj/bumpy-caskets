@@ -16,6 +16,9 @@ def load_excludes(yaml_path):
         data = yaml.safe_load(f)
     return data.get('excludes', [])
 
+def stream_output(line):
+    print(line, end='')
+
 class Stage(Enum):
     Create = auto()
     Prune = auto()
@@ -50,7 +53,7 @@ def main(repo, password, excludes_list):
 
     fail_stage = Stage.Create
     error_buffer = io.StringIO()
-    output_args = {"_out": sys.stdout, "_err": error_buffer}
+    output_args = {"_out": stream_output, "_err": stream_output}
 
     info("Starting backup")
     fail_stage = Stage.Create
@@ -92,6 +95,5 @@ def main(repo, password, excludes_list):
     except borg.ErrorReturnCode as e:
         # Print the captured standard error
         print(f"Backup failed at stage: {fail_stage.name}")
-        print(error_buffer.getvalue())
         print(f"Command failed with exit code: {e.exit_code}")
         sys.exit(e.exit_code)
