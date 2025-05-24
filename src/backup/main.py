@@ -23,6 +23,7 @@ class Stage(Enum):
     Create = auto()
     Prune = auto()
     Compact = auto()
+
 @click.command()
 @click.option('--repo', '-r', default=None, help='Path to the Borg repository.')
 @click.option('--password', '-p', default=None, help='Borg repository passphrase.')
