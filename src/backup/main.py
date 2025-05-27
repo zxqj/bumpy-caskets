@@ -24,6 +24,23 @@ class Stage(Enum):
     Prune = auto()
     Compact = auto()
 
+def get_next_archive_name(repo, hostname):
+    # List existing archives in the repository
+    existing_archives = borg.list(repo, "--short").splitlines()
+
+    # Regex to match archive names of the form {hostname}-{date}-{number}
+    pattern = re.compile(rf"^{re.escape(hostname)}-(\d{{4}}-\d{{2}}-\d{{2}})-(\d{{2}})$")
+    today = datetime.date.today().isoformat()
+    highest_number = 0
+
+    for archive in existing_archives:
+        match = pattern.match(archive)
+        if match and match.group(1) == today:
+            highest_number = max(highest_number, int(match.group(2)))
+
+    # Increment the highest number and format it with zero-padding
+    next_number = f"{highest_number + 1:02}"
+    return f"{hostname}-{today}-{next_number}"
 @click.command()
 @click.option('--repo', '-r', default=None, help='Path to the Borg repository.')
 @click.option('--password', '-p', default=None, help='Borg repository passphrase.')
@@ -50,7 +67,8 @@ def main(repo, password, excludes_list):
         excludes.extend(load_excludes(exclude_file))
 
     hostname = socket.gethostname()
-    archive_name = f"{hostname}-{datetime.date.today().isoformat()}"
+    # Replace the archive_name generation in the main function
+    archive_name = get_next_archive_name(repo, hostname)
 
     fail_stage = Stage.Create
     error_buffer = io.StringIO()
