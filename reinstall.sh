@@ -1,5 +1,5 @@
 #!/bin/bash
-rm -r *.egg-info
-rm -r build
+rm -rf src/*.egg-info
+rm -rf build
 pipx uninstall backup
 pipx install .
