@@ -7,6 +7,7 @@ from sh import borg
 from enum import Enum, auto
 import io
 import click
+import re
 
 def info(msg):
     print(f"\n{datetime.datetime.now()} {msg}\n", file=sys.stderr)
